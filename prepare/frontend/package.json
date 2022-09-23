@@ -1,0 +1,15 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next",
+    "build": "next build"
+  },
+  "author": "hyukjinKimm",
+  "license": "ISC",
+  "dependencies": {
+    "next": "^9.5.5"
+  }
+}
