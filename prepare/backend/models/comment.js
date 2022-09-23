@@ -9,7 +9,8 @@ module.exports = class Comment extends Model {
         type: DataTypes.TEXT,
         allowNull: false,
       },
-      
+      // UserId: 1
+      // PostId: 3
     }, {
       modelName: 'Comment',
       tableName: 'comments',
@@ -19,5 +20,7 @@ module.exports = class Comment extends Model {
     });
   }
   static associate(db) {
+    db.Comment.belongsTo(db.User);
+    db.Comment.belongsTo(db.Post);
   }
 };
