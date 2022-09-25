@@ -40,7 +40,6 @@ const AppLayout = ({ children }) => {
           <a href="https://github.com/hyukjinKimm" target="_blank" rel='noreferrer noopener'>Made by hyukjinKimm</a>
         </Col>
       </Row>
-      {children}
     </div> 
   )
 }
