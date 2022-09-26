@@ -2,6 +2,7 @@ import { createWrapper }  from 'next-redux-wrapper';
 import { createStore, compose, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension'
 import reducer from '../reducers'
+
 const configureStore = () => {
   const middlewares = []
   const enhancer = process.env.NODE_ENV === 'productino' 
