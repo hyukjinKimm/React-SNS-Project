@@ -1,0 +1,4 @@
+store 폴더안의 configureStore.js 는 wrapper 를 반환 
+wrapper 를 pages/_app.js 가 가져와서 최상단에 씌워줌 
+
+next 로 들어오는 모든요청은 _app.js 를 지나가기 때문에 모든 컴포넌트에서 중앙저장소에 접근 가능
