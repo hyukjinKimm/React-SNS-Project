@@ -1,0 +1,4 @@
+1. cors 에서 withCredential 를 true 로 
+2. 프론트에서 요청보낼때도 {withCredentials: true}
+3. withCredentials 가 true 이면 
+cors 에서 origin: true 혹은 origin: 주소 를 명시해주어야 한다. ( '*' 은 안됨)
