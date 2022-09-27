@@ -1,9 +1,12 @@
 const express = require('express')
 const cors = require('cors')
 const dotenv = require('dotenv')
+const morgan = require('morgan')
+
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const postRouter = require('./routes/post')
+const postsRouter = require('./routes/posts')
 const userRouter = require('./routes/user')
 
 const db = require('./models');
@@ -21,6 +24,7 @@ db.sequelize.sync()
   })
 passportConfig();
 
+app.use(morgan('dev'));
 app.use(cors({
   origin: 'http://localhost:3060',
   credentials:true,
@@ -37,6 +41,7 @@ app.use(passport.initialize());
 //passport.initialize에서 req에 isAuthenticated login logout등을 추가
 app.use(passport.session());
 
+app.use('/posts', postsRouter);
 app.use('/post', postRouter)
 app.use('/user', userRouter)
 app.listen(3065, () => {
