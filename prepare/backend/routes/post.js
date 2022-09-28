@@ -16,12 +16,16 @@ router.post('/', isLoggedIn, async (req, res) => {
         }, {
           model: Comment,
           include: [{
-            model: User,
+            model: User, // 댓글 작성자
             attributes: ['id', 'nickname']        
           }]
         }, {
-          model: User,
+          model: User, // 게시글 작성자
           attributes: ['id', 'nickname']
+        }, {
+          model: User, // 좋아요 누른 사람
+          as: 'Likers',
+          attributes: ['id']
         }]
     })
 
@@ -59,7 +63,44 @@ router.post('/:postId/comment', isLoggedIn, async (req, res) => {
     }
   
   })
-router.delete('/', (req, res) => {
-    
+
+router.patch('/:postId/like', isLoggedIn, async (req, res, next) => {
+  try{
+    const post = await Post.fineOne({ where: {id: req.params.postId} })
+    if (!post) {
+      return res.status(403).send('게시글이 존재하지 않습니다.')
+    }
+    await post.addLikers(req.user.id);
+    res.json({ postId: post.id, userId: req.user.id })
+  } catch(error) {
+      console.error(error)
+      next(error)
+  }
+
+})
+router.delete('/:postId/like', isLoggedIn, async (req, res, next) => {
+  try{
+    const post = await Post.fineOne({ where: {id: req.params.postId} })
+    if (!post) {
+      return res.status(403).send('게시글이 존재하지 않습니다.')
+    }
+
+    await post.removeLikers(req.user.id);
+    res.json({ postId: post.id, userId: req.user.id })
+  } catch(error) {
+      console.error(error)
+      next(error)
+  }
+})
+router.delete('/:postId', isLoggedIn, async (req, res, next) => {
+  try{
+    await Post.destroy({
+      where: {id: req.params.postId }
+    })
+    res.json({ postId: req.params.postId })
+  } catch(error) {
+      console.error(error)
+      next(error)
+  } 
 })
 module.exports = router
