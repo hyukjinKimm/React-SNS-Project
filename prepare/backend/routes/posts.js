@@ -1,4 +1,5 @@
 const express = require('express')
+const { Op } = require('sequelize');
 const { Post, User, Image, Comment } = require('../models')
 const router = express.Router()
 
