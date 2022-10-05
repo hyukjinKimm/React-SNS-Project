@@ -4,16 +4,40 @@ export const initialState = {
   signUpDate: {},
   loginData: {}
 }
-export const loginAction = (data) => {
+export const loginRequestAction = (data) => {
     return {
-      type: 'LOG_IN',
+      type: 'LOG_IN_REQURES',
       data
     }
+}
+export const loginSuccessAction = (data) => {
+  return {
+    type: 'LOG_IN_SUCCESS',
+    data
   }
-export const logoutAction = (data) => {
+}
+
+export const loginActionFailure = (data) => {
+  return {
+    type: 'LOG_IN_FAILURE',
+    data
+  }
+}
+export const logoutRequestAction = (data) => {
     return {
-    type: 'LOG_OUT',
+    type: 'LOG_OUT_REQURES',
     }
+}
+export const logoutSuccessAction = (data) => {
+  return {
+  type: 'LOG_OUT_SUCCESS',
+  }
+}
+
+export const logoutRequestFailure = (data) => {
+  return {
+  type: 'LOG_OUT_FAILURE',
+  }
 }
 const reducer = (state=initialState, action) => {
   switch(action.type){
