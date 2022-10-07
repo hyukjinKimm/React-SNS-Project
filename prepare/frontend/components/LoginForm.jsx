@@ -14,23 +14,25 @@ const FormWrapper = styled(Form)`
 `
 const LoginForm = () => {  
   const dispatch = useDispatch()
-  const  { isLoggingIn } = useSelector((state)=>state.user);
-  const [id, onChangeId] = useInput('')
+  const  { logInLoading } = useSelector((state)=>state.user);
+  const [email, onChangeEmali] = useInput('')
   const [password, onChangePassword] = useInput('')
   
   const onSubmitForm = useCallback(() => {
-    console.log(id, password)
-    dispatch(loginRequestAction({ id, password}))
-  }, [id, password])
+    console.log(email, password)
+    
+    dispatch(loginRequestAction({ email, password}))
+
+  }, [email, password])
 
   const style = useMemo(() => ({ marginTop: 10 }), [])
 
   return(
     <FormWrapper onFinish={onSubmitForm}>
       <div>
-        <label htmlFor="user-id">아이디</label>
+        <label htmlFor="user-email">이메일</label>
         <br/>
-        <Input id='user-id' name='user-id' value={id} onChange={onChangeId} required />
+        <Input id='user-email' name='user-email'  type='email' value={email} onChange={onChangeEmali} required />
       </div>
       <div>
         <label htmlFor="user-password">비밀번호</label>
@@ -45,7 +47,7 @@ const LoginForm = () => {
         />
       </div>
       <div style={style}>
-        <Button type='primary' htmlType='submit' loading={isLoggingIn}>로그인</Button>
+        <Button type='primary' htmlType='submit' loading={ logInLoading }>로그인</Button>
         <Link href='/signup'><a><Button>회원가입</Button></a></Link>
       </div>
     </FormWrapper>

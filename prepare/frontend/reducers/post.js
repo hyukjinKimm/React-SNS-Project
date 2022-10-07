@@ -1,3 +1,4 @@
+import shortId from 'shortid'
 export const initialState = {
   mainPosts: [{
     id: 1,
@@ -29,6 +30,10 @@ export const initialState = {
   addPostLoading: false,
   addPostDone: false,
   addPostError: null,
+
+  addCommentLoading: false,
+  addCommentDone: false,
+  addCommentError: null,
   
 }
 
@@ -50,16 +55,25 @@ export const addComment = (data) => ({
   data,
 })
 
-const dummyPost = {
-  id: 2,
-  content: '더미데이터입니다.',
+const dummyPost = (data)  => ({
+  id: shortId.generate(),
+  content: data,
   User: {
     id: 1,
     nickname: 'hyukjin'
   },
   Images: [],
   Comments: []
-}
+})
+
+const dummyComment = (data) => ({
+  id: shortId.generate(),
+  content: data,
+  User: {
+    id: 1,
+    nickname: 'hyukjin'
+  },
+})
 const reducer = (state=initialState, action) => {
   switch(action.type){
     case ADD_POST_REQUEST:
@@ -69,10 +83,10 @@ const reducer = (state=initialState, action) => {
         addPostDone: false,
         addPostError: null,
       }
-    case ADD_POST_FAILURE:
+    case ADD_POST_SUCCESS:
       return {
         ...state,
-        mainPosts: [dummyPost, ...state.mainPosts],
+        mainPosts: [dummyPost(action.data), ...state.mainPosts],
         addPostLoading: false,
         addPostDone: true,
       }
@@ -89,9 +103,18 @@ const reducer = (state=initialState, action) => {
         addCommentDone: false,
         addCommentError: null,
       }
-    case ADD_COMMENT_FAILURE:
+
+    case ADD_COMMENT_SUCCESS:
+      console.log('rhehe')
+      const postIndex = state.mainPosts.findIndex((v) => v.id === action.data.postId)
+      const post = { ...state.mainPosts[postIndex]}
+      post.Comments = [dummyComment(action.data.content), ...post.Comments]
+      const mainPosts = [...state.mainPosts];
+      mainPosts[postIndex] = post
+
       return {
         ...state,
+        mainPosts,
         addCommentLoading: false,
         addCommentDone: true,
       }
