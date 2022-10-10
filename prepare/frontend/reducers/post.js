@@ -1,5 +1,6 @@
 import shortId from 'shortid'
 import produce from 'immer'
+import faker from 'faker'
 export const initialState = {
   mainPosts: [{
     id: 1,
@@ -48,6 +49,27 @@ export const initialState = {
   removePostError: null,
   
 }
+
+initialState.mainPosts = initialState.mainPosts.concat(Array(20).fill().map(() => ({
+  id: shortId.generate(),
+  User: {
+    id: shortId.generate(),
+    nickname: faker.name.findName()
+  },
+  content: faker.lorem.paragraph(),
+  Images: [{
+    src: faker.image.imageUrl()
+  }],
+  Comments: [{
+    User: {
+      id: shortId.generate(),
+      nickname: faker.name.findName()    
+    },
+    content: faker.lorem.sentence(),
+  }],
+}))
+)
+
 
 
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST'
