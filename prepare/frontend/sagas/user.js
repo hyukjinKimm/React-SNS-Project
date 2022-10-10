@@ -1,7 +1,9 @@
 import {  all, fork, call, put, take, takeEvery, takeLatest, throttle, delay  } from 'redux-saga/effects'
 import { LOG_IN_REQUEST, LOG_IN_FAILURE, LOG_IN_SUCCESS, 
     LOG_OUT_REQUEST, LOG_OUT_FAILURE, LOG_OUT_SUCCESS,
-    SIGN_UP_REQUEST, SIGN_UP_SUCCESS, SIGN_UP_FAILURE
+    SIGN_UP_REQUEST, SIGN_UP_SUCCESS, SIGN_UP_FAILURE,
+    FOLLOW_REQUEST, FOLLOW_SUCCESS, FOLLOW_FAILURE,
+    UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, UNFOLLOW_FAILURE
 } from '../reducers/user'
 function logInAPI(data){
     // 실제로 서버에 요청을 보내는 부분
@@ -18,6 +20,46 @@ function* logIn(action){  // LOG_IN_REQUEST 액션이 여가로 전달된다,
     } catch(err){
         yield put({ // 로그인 실패
             type: LOG_IN_FAILURE,
+            error: err.response.data
+        })
+    }
+
+}
+function followAPI(data){
+    // 실제로 서버에 요청을 보내는 부분
+    return axios.post('URL', data)
+}
+function* follow(action){  // LOG_IN_REQUEST 액션이 여가로 전달된다,
+    try{
+        //const result = yield call(followAPI, action.data) // call 은 동기함수 호출  
+        yield delay(1000)
+        yield put({ // 로그인 성공 PUT 은 disaptch 이다 .
+        type: FOLLOW_SUCCESS,
+        data: action.data
+        })
+    } catch(err){
+        yield put({ // 로그인 실패
+            type: FOLLOW_FAILURE,
+            error: err.response.data
+        })
+    }
+
+}
+function unfollowAPI(data){
+    // 실제로 서버에 요청을 보내는 부분
+    return axios.post('URL', data)
+}
+function* unfollow(action){  // LOG_IN_REQUEST 액션이 여가로 전달된다,
+    try{
+        //const result = yield call(unfollowAPI, action.data) // call 은 동기함수 호출  
+        yield delay(1000)
+        yield put({ // 로그인 성공 PUT 은 disaptch 이다 .
+        type: UNFOLLOW_SUCCESS,
+        data: action.data
+        })
+    } catch(err){
+        yield put({ // 로그인 실패
+            type: UNFOLLOW_FAILURE,
             error: err.response.data
         })
     }
@@ -63,6 +105,12 @@ function* signUp(){
     }
 
 }
+function* watchFollow() {
+    yield takeLatest(FOLLOW_REQUEST, follow)
+}
+function* watchUnfollow() {
+    yield takeLatest(UNFOLLOW_REQUEST, unfollow)
+}
 function* watchLogIn() {
   yield takeLatest(LOG_IN_REQUEST, logIn) // LOG_IN 액션이 dispatch 되면 login 실행
 }
@@ -76,6 +124,8 @@ function* watchSignUp() {
 
 export default function* userSaga(){
   yield all([
+    fork(watchFollow),
+    fork(watchUnfollow),
     fork(watchLogIn),
     fork(watchLogOut),
     fork(watchSignUp)
