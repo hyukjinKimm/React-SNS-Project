@@ -77,7 +77,7 @@ router.post('/', isLoggedIn, upload.none(), async (req, res) => {
 
 })
 
-router.post('/images', isLoggedIn, upload.array('image'), async, (req, res, next) => {
+router.post('/images', isLoggedIn, upload.array('image'), async (req, res, next) => {
   try{
     console.log(req.files);
     res.json(req.files.map((v) => v.filename));

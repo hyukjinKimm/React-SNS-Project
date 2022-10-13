@@ -5,14 +5,14 @@ import { LOG_IN_REQUEST, LOG_IN_FAILURE, LOG_IN_SUCCESS,
     FOLLOW_REQUEST, FOLLOW_SUCCESS, FOLLOW_FAILURE,
     UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, UNFOLLOW_FAILURE
 } from '../reducers/user'
+import axios from 'axios'
 function logInAPI(data){
     // 실제로 서버에 요청을 보내는 부분
-    return axios.post('URL', data)
+    return axios.post('/user/login', data)
 }
 function* logIn(action){  // LOG_IN_REQUEST 액션이 여가로 전달된다,
     try{
-        //const result = yield call(logInAPI, action.data) // call 은 동기함수 호출  
-        yield delay(1000)
+        const result = yield call(logInAPI, action.data) // call 은 동기함수 호출  
         yield put({ // 로그인 성공 PUT 은 disaptch 이다 .
         type: LOG_IN_SUCCESS,
         data: action.data
@@ -85,14 +85,15 @@ function* logOut(){
     }
 
 }
-function signUpAPI(){
+function signUpAPI(data){
     // 실제로 서버에 요청을 보내는 부분
-    return axios.post('URL')
+    return axios.post('/user', data)
+    
 }
-function* signUp(){
+function* signUp(action){
     try{
-        //const result = yield call(signUpAPI) 
-        yield delay(1000)
+        const result = yield call(signUpAPI, action.data) 
+        console.log(result)
         yield put({ 
             type: SIGN_UP_SUCCESS,
             //data: result.data
