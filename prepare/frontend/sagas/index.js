@@ -9,6 +9,7 @@ import userSaga from './user'
 // throttle 제한시간동안의 요청횟수에 제한을 둔다 
 
 axios.defaults.baseURL = "http://localhost:3065";
+axios.defaults.withCredentials = true
 export default function* rootSaga() {
   yield all([ // all 은 배열안에 있는것들을 한방에 전부 실행
     fork(postSaga),

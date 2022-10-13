@@ -13,7 +13,7 @@ const UserProfile = () => {
       actions={[
         <div key="twit">트윗<br /> {me.Posts.length}</div>,
         <div key="followings">팔로잉<br/>{me.Followings.length} </div>,
-        <div key="follwers">팔로워<br/>{me.Follwers.length}</div>
+        <div key="follwers">팔로워<br/>{me.Followers.length}</div>
       ]}
     >
       <Card.Meta

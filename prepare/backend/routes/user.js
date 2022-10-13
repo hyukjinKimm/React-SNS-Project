@@ -74,9 +74,14 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
 })
 
 router.post('/logout', isLoggedIn, (req, res) => {
-    req.logout();
+  req.logout(function(err) {
+    if (err) { return next(err); }
     req.session.destroy();
-    res.send('ok');
+    res.status(200).json({
+      code: 200,
+      message: '로그아웃 성공'
+    })
+  });
   });
   
 router.post('/', isNotLoggedIn, async (req, res, next) => { // POST /user/

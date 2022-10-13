@@ -15,7 +15,7 @@ function* logIn(action){  // LOG_IN_REQUEST 액션이 여가로 전달된다,
         const result = yield call(logInAPI, action.data) // call 은 동기함수 호출  
         yield put({ // 로그인 성공 PUT 은 disaptch 이다 .
         type: LOG_IN_SUCCESS,
-        data: action.data
+        data: result.data
         })
     } catch(err){
         yield put({ // 로그인 실패
@@ -67,15 +67,13 @@ function* unfollow(action){  // LOG_IN_REQUEST 액션이 여가로 전달된다,
 }
 function logOutAPI(){
     // 실제로 서버에 요청을 보내는 부분
-    return axios.post('URL')
+    return axios.post('user/logout')
 }
 function* logOut(){
     try{
-        //const result = yield call(logOutAPI) 
-        yield delay(1000)
+        yield call(logOutAPI) 
         yield put({ 
             type: LOG_OUT_SUCCESS,
-            //data: result.data
         })
     } catch(err){
         yield put({ 

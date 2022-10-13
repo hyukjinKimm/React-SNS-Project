@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import useInput from '../hooks/useInput'
 import PropTyps from 'prop-types'
 import { Form, Input, Button } from 'antd'
@@ -14,10 +14,15 @@ const FormWrapper = styled(Form)`
 `
 const LoginForm = () => {  
   const dispatch = useDispatch()
-  const  { logInLoading } = useSelector((state)=>state.user);
+  const  { logInLoading, logInError } = useSelector((state)=>state.user);
   const [email, onChangeEmali] = useInput('')
   const [password, onChangePassword] = useInput('')
   
+  useEffect(() => {
+    if(logInError){
+      alert(logInError)
+    }
+  }, [logInError])
   const onSubmitForm = useCallback(() => {
     console.log(email, password)
     
