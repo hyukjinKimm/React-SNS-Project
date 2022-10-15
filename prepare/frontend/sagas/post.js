@@ -1,5 +1,4 @@
 import {  all, fork, call, put, take, takeEvery, takeLatest, throttle, delay  } from 'redux-saga/effects'
-import shortid from 'shortid'
 import { 
     ADD_POST_REQUEST, ADD_POST_SUCCESS, ADD_POST_FAILURE,
     ADD_COMMENT_REQUEST, ADD_COMMENT_SUCCESS, ADD_COMMENT_FAILURE,
@@ -9,12 +8,15 @@ import {
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user'
 
+import axios from 'axios'
 function addPostAPI(data){
   // 실제로 서버에 요청을 보내는 부분
   return axios.post('/post', {content: data})
 }
 function* addPost(action){
     try{
+        console.log('hi')
+        console.log(action)
         const result = yield call(addPostAPI, action.data) 
         yield put({ 
           type: ADD_POST_SUCCESS,

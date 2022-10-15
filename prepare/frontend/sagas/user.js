@@ -3,7 +3,8 @@ import { LOG_IN_REQUEST, LOG_IN_FAILURE, LOG_IN_SUCCESS,
     LOG_OUT_REQUEST, LOG_OUT_FAILURE, LOG_OUT_SUCCESS,
     SIGN_UP_REQUEST, SIGN_UP_SUCCESS, SIGN_UP_FAILURE,
     FOLLOW_REQUEST, FOLLOW_SUCCESS, FOLLOW_FAILURE,
-    UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, UNFOLLOW_FAILURE
+    UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, UNFOLLOW_FAILURE,
+    LOAD_USER_REQUEST, LOAD_USER_SUCCESS, LOAD_USER_FAILURE
 } from '../reducers/user'
 import axios from 'axios'
 function logInAPI(data){
@@ -104,6 +105,28 @@ function* signUp(action){
     }
 
 }
+
+function loadUserAPI(data){
+    // 실제로 서버에 요청을 보내는 부분
+    return axios.get('/user')
+    
+}
+function* loadUser(action){
+    try{
+        const result = yield call(loadUserAPI, action.data) 
+        yield put({ 
+            type: LOAD_USER_SUCCESS,
+            data: result.data
+        })
+    } catch(err){
+        yield put({ 
+            type: LOAD_USER_FAILURE,
+            error: err.response.data
+            })
+    }
+
+}
+
 function* watchFollow() {
     yield takeLatest(FOLLOW_REQUEST, follow)
 }
@@ -120,6 +143,9 @@ function* watchLogOut() {
 function* watchSignUp() {
     yield takeLatest(SIGN_UP_REQUEST, signUp)
 }
+function* watchLoadUser() {
+    yield takeLatest(LOAD_USER_REQUEST, loadUser)
+}
 
 export default function* userSaga(){
   yield all([
@@ -127,6 +153,7 @@ export default function* userSaga(){
     fork(watchUnfollow),
     fork(watchLogIn),
     fork(watchLogOut),
-    fork(watchSignUp)
+    fork(watchSignUp),
+    fork(watchLoadUser)
   ])
 }

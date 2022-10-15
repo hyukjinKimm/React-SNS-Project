@@ -27,9 +27,9 @@ router.get('/', async (req, res, next) => { // GET /user
           attributes: ['id'],
         }]
       })
-      res.status(200).json(fullUserWithoutPassword);
+      return res.status(200).json(fullUserWithoutPassword);
     } else {
-      res.status(200).json(null);
+      return res.status(200).json(null);
     }
   } catch (error) {
     console.error(error);
