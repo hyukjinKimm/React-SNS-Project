@@ -37,15 +37,14 @@ function* addPost(action){
 }
 function loadPostsAPI(data){
     // 실제로 서버에 요청을 보내는 부분
-    return axios.get('URL', data)
+    return axios.get('/posts', data)
   }
 function* loadPosts(action){
     try{
-        //const result = yield call(loadPostsAPI, action.data) 
-        yield delay(1000)
+        const result = yield call(loadPostsAPI, action.data) 
         yield put({ 
           type: LOAD_POSTS_SUCCESS,
-          data: generateDummyPost(10)
+          data: result.data
         })
 
     } catch(err){
@@ -95,6 +94,7 @@ function* addComment(action){
         data: result.data
         })
     } catch(err){
+        console.error(err)
         yield put({ 
             type: ADD_COMMENT_FAILURE,
             error: err.response.data
