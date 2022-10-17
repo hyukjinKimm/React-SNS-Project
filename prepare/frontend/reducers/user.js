@@ -32,15 +32,7 @@ export const initialState = {
   signUpDate: {},
   loginData: {}
 }
-const dummyUser = (data) => ({
-  ...data,
-  nickname: 'hyukjin',
-  id: 1,
-  Posts: [{id: 1}],
-  Followings: [{nickname: '철수'}, {nickname: '지민'}, {nickname: '영희'} ],
-  Follwers: [{nickname: '철수'}, {nickname: '지민'}, {nickname: '영희'} ],
 
-})
 export const LOAD_USER_REQUEST = 'LOAD_USER_REQUEST'
 export const LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS'
 export const LOAD_USER_FAILURE = 'LOAD_USER_FAILURE'
@@ -202,6 +194,7 @@ const reducer = (state=initialState, action) => {
         break
   
       case CHANGE_NICKNAME_SUCCESS:
+        draft.me.nickname = action.data.nickname
         draft.changeNicknameLoading = false 
         draft.changeNicknameDone = true 
         break

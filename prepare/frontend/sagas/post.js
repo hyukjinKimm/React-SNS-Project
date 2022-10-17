@@ -59,15 +59,15 @@ function* loadPosts(action){
 }
 function removePostAPI(data){
     // 실제로 서버에 요청을 보내는 부분
-    return axios.post('URL', data)
+    return axios.delete(`/post/${data}`)
   }
 function* removePost(action){
     try{
-        //const result = yield call(removePostAPI, action.data) 
+        const result = yield call(removePostAPI, action.data) 
         yield delay(1000)
         yield put({ 
           type: REMOVE_POST_SUCCESS,
-          data: action.data
+          data: result.data
         })
         yield put({
             type: REMOVE_POST_OF_ME,
@@ -165,7 +165,7 @@ function* watchAddComment() {
     yield takeLatest(ADD_COMMENT_REQUEST, addComment)
 }
 export default function* postSaga() {
-    yield all([ // all 은 배열안에 있는것들을 한방에 전부 실행
+    yield all([ // all 은 배열안에 있는것들을 한방에 전부 실행 
       fork(watchlikePost), 
       fork(watchunlikePost), 
       fork(watchaddPost), // fork 는 안의 함수를 실행한다는 의미 ( fork 는 비동기 함수 호출)

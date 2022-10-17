@@ -4,7 +4,8 @@ import { LOG_IN_REQUEST, LOG_IN_FAILURE, LOG_IN_SUCCESS,
     SIGN_UP_REQUEST, SIGN_UP_SUCCESS, SIGN_UP_FAILURE,
     FOLLOW_REQUEST, FOLLOW_SUCCESS, FOLLOW_FAILURE,
     UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, UNFOLLOW_FAILURE,
-    LOAD_USER_REQUEST, LOAD_USER_SUCCESS, LOAD_USER_FAILURE
+    LOAD_USER_REQUEST, LOAD_USER_SUCCESS, LOAD_USER_FAILURE,
+    CHANGE_NICKNAME_REQUEST, CHANGE_NICKNAME_SUCCESS, CHANGE_NICKNAME_FAILURE
 } from '../reducers/user'
 import axios from 'axios'
 function logInAPI(data){
@@ -127,6 +128,30 @@ function* loadUser(action){
 
 }
 
+function changeNicknameAPI(data){
+    // 실제로 서버에 요청을 보내는 부분
+    return axios.patch('/user/nickname', { nickname: data})
+    
+}
+function* changeNickname(action){
+    try{
+        const result = yield call(changeNicknameAPI, action.data) 
+        yield put({ 
+            type: CHANGE_NICKNAME_SUCCESS,
+            data: result.data
+        })
+    } catch(err){
+        yield put({ 
+            type: CHANGE_NICKNAME_FAILURE,
+            error: err.response.data
+            })
+    }
+
+}
+function* watchChangeNickname() {
+    yield takeLatest(CHANGE_NICKNAME_REQUEST, changeNickname)
+}
+
 function* watchFollow() {
     yield takeLatest(FOLLOW_REQUEST, follow)
 }
@@ -149,6 +174,7 @@ function* watchLoadUser() {
 
 export default function* userSaga(){
   yield all([
+    fork(watchChangeNickname),
     fork(watchFollow),
     fork(watchUnfollow),
     fork(watchLogIn),
