@@ -5,7 +5,8 @@ import {
     REMOVE_POST_REQUEST, REMOVE_POST_SUCCESS, REMOVE_POST_FAILURE,
     LOAD_POSTS_REQUEST, LOAD_POSTS_SUCCESS, LOAD_POSTS_FAILURE, generateDummyPost,
     LIKE_POST_REQUEST, LIKE_POST_SUCCESS, LIKE_POST_FAILURE,
-    UNLIKE_POST_REQUEST, UNLIKE_POST_SUCCESS, UNLIKE_POST_FAILURE
+    UNLIKE_POST_REQUEST, UNLIKE_POST_SUCCESS, UNLIKE_POST_FAILURE, 
+    UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_SUCCESS, UPLOAD_IMAGES_FAILURE
 } from '../reducers/post'
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user'
@@ -13,7 +14,7 @@ import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user'
 import axios from 'axios'
 function addPostAPI(data){
   // 실제로 서버에 요청을 보내는 부분
-  return axios.post('/post', {content: data})
+  return axios.post('/post', data)
 }
 function* addPost(action){
     try{
@@ -144,6 +145,26 @@ function* unlikePost(action){
     }
 
 }
+function uploadImagesAPI(data){
+    // 실제로 서버에 요청을 보내는 부분
+    return axios.post('post/images', data)
+  }
+function* uploadImages(action){
+    try{
+        const result = yield call(uploadImagesAPI, action.data) 
+        yield put({ 
+        type: UPLOAD_IMAGES_SUCCESS,
+        data: result.data
+        })
+    } catch(err){
+        console.error(err)
+        yield put({ 
+            type: UPLOAD_IMAGES_FAILURE,
+            error: err.response.data
+        })
+    }
+
+}
 function* watchlikePost() {
     yield takeLatest(LIKE_POST_REQUEST, likePost)
 }
@@ -164,8 +185,12 @@ function* watchremovePost() {
 function* watchAddComment() {
     yield takeLatest(ADD_COMMENT_REQUEST, addComment)
 }
+function* watchUploadImages() {
+    yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages)
+}
 export default function* postSaga() {
     yield all([ // all 은 배열안에 있는것들을 한방에 전부 실행 
+      fork(watchUploadImages),
       fork(watchlikePost), 
       fork(watchunlikePost), 
       fork(watchaddPost), // fork 는 안의 함수를 실행한다는 의미 ( fork 는 비동기 함수 호출)
