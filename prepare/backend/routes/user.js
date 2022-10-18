@@ -125,13 +125,13 @@ router.patch('/nickname', isLoggedIn, async ( req, res, next) => {
 router.patch('/:userId/follow', isLoggedIn, async ( req, res, next) => {
   try{
     const user = await User.findOne({ where: { id: req.params.userId }})
-    if (!uesr){
+    if (!user){
       res.status(403).send('존재하지 않는 사용자 입니다. (팔로우실패)')
     }
     await user.addFollowers(req.user.id);
 
     res.status(200).json({ UserId: parseInt(req.params.userId, 10) })
-  } catch(error){
+  } catch(error){ 
     console.error(error)
     next(error)
   }
@@ -139,7 +139,7 @@ router.patch('/:userId/follow', isLoggedIn, async ( req, res, next) => {
 router.delete('/:userId/follow', isLoggedIn, async ( req, res, next) => {
   try{
     const user = await User.findOne({ where: { id: req.params.userId }})
-    if (!uesr){
+    if (!user){
       res.status(403).send('존재하지 않는 사용자 입니다. (언팔로우실패)')
     }
     await user.removeFollowers(req.user.id);
@@ -153,7 +153,7 @@ router.delete('/:userId/follow', isLoggedIn, async ( req, res, next) => {
 router.delete('/follower/:userId', isLoggedIn, async ( req, res, next) => {
   try{
     const user = await User.findOne({ where: { id: req.params.userId }})
-    if (!uesr){
+    if (!user){
       res.status(403).send('존재하지 않는 사용자 입니다. (언팔로워실패)')
     }
     await user.removeFollowings(req.user.id);
@@ -168,10 +168,10 @@ router.delete('/follower/:userId', isLoggedIn, async ( req, res, next) => {
 router.get('/followers', isLoggedIn, async ( req, res, next) => {
   try{
     const user = await User.findOne({ where: { id: req.user.id }})
-    if (!uesr){
+    if (!user){
       res.status(403).send('존재하지 않는 사용자 입니다. (팔로워 가져오기 실패)')
     }
-    const followers = user.getFollowers()
+    const followers = await user.getFollowers()
     res.status(200).json(followers)
   } catch(error){
     console.error(error)
@@ -182,10 +182,10 @@ router.get('/followers', isLoggedIn, async ( req, res, next) => {
 router.get('/followings', isLoggedIn, async ( req, res, next) => {
   try{
     const user = await User.findOne({ where: { id: req.user.id }})
-    if (!uesr){
+    if (!user){
       res.status(403).send('존재하지 않는 사용자 입니다. (팔로잉 가져오기 실패)')
     }
-    const followings = user.getFollowings()
+    const followings = await user.getFollowings()
     res.status(200).json(followings)
   } catch(error){
     console.error(error)
