@@ -32,6 +32,9 @@ export const initialState = {
   uploadImagesDone: false,
   uploadImagesError: null,
   
+  retweetLoading: false,
+  retweetDone: false,
+  retweetError: null,
 }
 
 
@@ -63,6 +66,10 @@ export const ADD_COMMENT_REQUEST = 'ADD_COMMENT_REQUEST'
 export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS'
 export const ADD_COMMENT_FAILURE = 'ADD_COMMENT_FAILURE'
 
+export const RETWEET_REQUEST = 'RETWEET_REQUEST'
+export const RETWEET_SUCCESS = 'RETWEET_SUCCESS'
+export const RETWEET_FAILURE = 'RETWEET_FAILURE'
+
 export const REMOVE_IMAGE = 'REMOVE_IMAGE'
 
 
@@ -79,6 +86,21 @@ export const addComment = (data) => ({
 const reducer = (state=initialState, action) => {
   return produce(state, (draft) => {
     switch(action.type){
+      case RETWEET_REQUEST:
+        draft.retweetLoading = true
+        draft.retweetDone = false
+        draft.retweetError = null
+        break
+      case RETWEET_SUCCESS:{
+        draft.retweetLoading = false
+        draft.retweetDone = true 
+        draft.mainPosts.unshift(action.data)
+        break
+      }
+      case RETWEET_FAILURE:
+        draft.retweetLoading = false 
+        draft.retweetError = action.error 
+        break
       case REMOVE_IMAGE:
         draft.imagePaths = draft.imagePaths.filter((v, i) => i !== action.data);
         break 
@@ -95,7 +117,7 @@ const reducer = (state=initialState, action) => {
       }
       case UPLOAD_IMAGES_FAILURE:
         draft.uploadImagesLoading = false 
-        draft.uploadImagesError = action.arror 
+        draft.uploadImagesError = action.error 
         break
       case LIKE_POST_REQUEST:
         draft.likePostLoading = true
@@ -111,7 +133,7 @@ const reducer = (state=initialState, action) => {
       }
       case LIKE_POST_FAILURE:
         draft.likePostLoading = false 
-        draft.likePostError = action.arror 
+        draft.likePostError = action.error 
         break
       case UNLIKE_POST_REQUEST:
         
@@ -128,7 +150,7 @@ const reducer = (state=initialState, action) => {
       }
       case UNLIKE_POST_FAILURE:
         draft.unlikePostLoading = false 
-        draft.unlikePostError = action.arror 
+        draft.unlikePostError = action.error 
         break
       case LOAD_POSTS_REQUEST:
         draft.loadPostsLoading = true
@@ -143,7 +165,7 @@ const reducer = (state=initialState, action) => {
         break
       case LOAD_POSTS_FAILURE:
         draft.loadPostsLoading = false 
-        draft.loadPostsError = action.arror 
+        draft.loadPostsError = action.error 
         break
       case ADD_POST_REQUEST:
         draft.addPostLoading = true
@@ -158,7 +180,7 @@ const reducer = (state=initialState, action) => {
         break
       case ADD_POST_FAILURE:
         draft.addPostLoading = false 
-        draft.addPostError = action.arror 
+        draft.addPostError = action.error 
         break
       case ADD_COMMENT_REQUEST:
         draft.addCommentLoading = true 

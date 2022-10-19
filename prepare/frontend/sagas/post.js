@@ -6,7 +6,8 @@ import {
     LOAD_POSTS_REQUEST, LOAD_POSTS_SUCCESS, LOAD_POSTS_FAILURE, generateDummyPost,
     LIKE_POST_REQUEST, LIKE_POST_SUCCESS, LIKE_POST_FAILURE,
     UNLIKE_POST_REQUEST, UNLIKE_POST_SUCCESS, UNLIKE_POST_FAILURE, 
-    UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_SUCCESS, UPLOAD_IMAGES_FAILURE
+    UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_SUCCESS, UPLOAD_IMAGES_FAILURE, 
+    RETWEET_REQUEST, RETWEET_SUCCESS, RETWEET_FAILURE
 } from '../reducers/post'
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user'
@@ -165,6 +166,27 @@ function* uploadImages(action){
     }
 
 }
+function retweetAPI(data){
+    // 실제로 서버에 요청을 보내는 부분
+    return axios.post(`post/${data}/retweet`)
+  }
+function* retweet(action){
+    try{
+      
+        const result = yield call(retweetAPI, action.data) 
+        yield put({ 
+        type: RETWEET_SUCCESS,
+        data: result.data
+        })
+    } catch(err){
+        console.error(err)
+        yield put({ 
+            type: RETWEET_FAILURE,
+            error: err.response.data
+        })
+    }
+
+}
 function* watchlikePost() {
     yield takeLatest(LIKE_POST_REQUEST, likePost)
 }
@@ -188,8 +210,12 @@ function* watchAddComment() {
 function* watchUploadImages() {
     yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages)
 }
+function* watchRetweet() {
+    yield takeLatest(RETWEET_REQUEST, retweet)
+}
 export default function* postSaga() {
     yield all([ // all 은 배열안에 있는것들을 한방에 전부 실행 
+      fork(watchRetweet),
       fork(watchUploadImages),
       fork(watchlikePost), 
       fork(watchunlikePost), 

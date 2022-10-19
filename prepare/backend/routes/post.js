@@ -138,6 +138,10 @@ router.post('/:postId/retweet', isLoggedIn, async (req, res, next) => {
           model: User,
           attributes: ['id', 'nickname'],
         }],
+      }, {
+        model: User,
+        as: 'Likers',
+        attributes: ['id']
       }],
     })
     res.status(201).json(retweetWithPrevPost);
