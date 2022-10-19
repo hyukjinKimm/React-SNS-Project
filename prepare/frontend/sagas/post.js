@@ -39,13 +39,13 @@ function* addPost(action){
     }
 
 }
-function loadPostsAPI(data){
+function loadPostsAPI(lastId){
     // 실제로 서버에 요청을 보내는 부분
-    return axios.get('/posts', data)
+    return axios.get(`/posts?lastId=${lastId || 0}`)
   }
 function* loadPosts(action){
     try{
-        const result = yield call(loadPostsAPI, action.data) 
+        const result = yield call(loadPostsAPI, action.lastId) 
         yield put({ 
           type: LOAD_POSTS_SUCCESS,
           data: result.data
