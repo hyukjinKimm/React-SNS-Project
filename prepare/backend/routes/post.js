@@ -2,7 +2,7 @@ const express = require('express')
 const multer = require('multer')
 const path = require('path')
 const fs = require('fs');
-const { Post, Comment, Image, User }= require('../models')
+const { Post, Comment, Image, User, Hashtag }= require('../models')
 const { isLoggedIn } = require('./middlewares')
 const router = express.Router()
 
