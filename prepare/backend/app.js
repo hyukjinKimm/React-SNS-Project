@@ -42,10 +42,10 @@ app.use(passport.initialize());
 //passport.initialize에서 req에 isAuthenticated login logout등을 추가
 app.use(passport.session());
 
-
+app.use('/posts', postsRouter);
 app.use('/post', postRouter)
 app.use('/user', userRouter)
-app.use('/posts', postsRouter);
+
 app.listen(3065, () => {
   console.log('서버 실행중')
 })
