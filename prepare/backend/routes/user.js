@@ -193,7 +193,4 @@ router.get('/followings', isLoggedIn, async ( req, res, next) => {
   }
 })
 
-
-
-
 module.exports = router
