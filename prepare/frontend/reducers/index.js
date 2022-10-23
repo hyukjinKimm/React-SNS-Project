@@ -9,16 +9,19 @@ import post from './post'
 } */
 
  // (이전상태 ,액션) => 다음상태 
-const rootReducer = combineReducers({
-  index: (state = {}, action) => { // SSR 을 위한 부분
-    switch(action.type){
-      case HYDRATE:
-        return { ...state, ...action.payload }
-      default:
-        return state
+ const rootReducer = (state, action) => {
+  switch (action.type) {
+    case HYDRATE:
+      console.log('HYDRATE', action);
+      return action.payload;
+    default: {
+      const combinedReducer = combineReducers({
+        user,
+        post,
+      });
+      return combinedReducer(state, action);
     }
-  },
-  user,
-  post
-})
+  }
+};
+
 export default rootReducer

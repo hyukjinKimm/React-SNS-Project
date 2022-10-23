@@ -1,6 +1,10 @@
 import produce from 'immer'
 export const initialState = {
 
+  loadMyInfoLoading: false,
+  loadMyInfoDone: false,
+  loadMyInfoError: null,
+
   loadFollowingsLoading: false,
   loadFollowingsDone: false,
   loadFollowingsError: null,
@@ -41,9 +45,13 @@ export const initialState = {
   changeNicknameDone: false,
   changeNicknameError: null,
   me: null,
-  signUpDate: {},
-  loginData: {}
+  userInfo: null
+
 }
+export const LOAD_MY_INFO_REQUEST = 'LOAD_MY_INFO_REQUEST'
+export const LOAD_MY_INFO_SUCCESS = 'LOAD_MY_INFO_SUCCESS'
+export const LOAD_MY_INFO_FAILURE = 'LOAD_MY_INFO_FAILURE'
+
 export const REMOVE_FOLLOWER_REQUEST = 'REMOVE_FOLLOWER_REQUEST'
 export const REMOVE_FOLLOWER_SUCCESS = 'REMOVE_FOLLOWER_SUCCESS'
 export const REMOVE_FOLLOWER_FAILURE = 'REMOVE_FOLLOWER_FAILURE'
@@ -141,6 +149,21 @@ const reducer = (state=initialState, action) => {
         draft.loadFollowingsLoading = false 
         draft.loadFollowingsError = action.error
         break 
+      case LOAD_MY_INFO_REQUEST:
+        draft.loadMyInfoLoading = true
+        draft.loadMyInfoError = null 
+        draft.loadMyInfoDone = false 
+        break
+      case LOAD_MY_INFO_SUCCESS:
+        draft.loadMyInfoLoading = false 
+        draft.loadMyInfoDone = true 
+        draft.me = action.data
+        break
+      case LOAD_MY_INFO_FAILURE: 
+        draft.loadMyInfoLoading = false 
+        draft.loadMyInfoError = action.error
+        break 
+
       case LOAD_FOLLOWERS_REQUEST:
         draft.loadFollowersLoading = true
         draft.loadFollowersError = null 
@@ -170,9 +193,6 @@ const reducer = (state=initialState, action) => {
         draft.removeFollowerError = action.error
         break 
         
-
-
-
       case LOAD_USER_REQUEST:
         draft.loadUserLoading = true
         draft.loadUserError = null 
@@ -181,7 +201,7 @@ const reducer = (state=initialState, action) => {
       case LOAD_USER_SUCCESS:
         draft.loadUserLoading = false 
         draft.loadUserDone = true 
-        draft.me = action.data
+        draft.userInfo = action.data
         break
       case LOAD_USER_FAILURE: 
         draft.loadUserLoading = false 

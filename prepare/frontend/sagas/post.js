@@ -39,26 +39,26 @@ function* addPost(action){
     }
 
 }
-function loadPostsAPI(lastId){
-    // 실제로 서버에 요청을 보내는 부분
-    return axios.get(`/posts?lastId=${lastId || 0}`)
+function loadPostsAPI(lastId) {
+    const params = { lastId:lastId || 0 };
+    return axios.get('/posts', {params});
   }
-function* loadPosts(action){
-    try{
-        const result = yield call(loadPostsAPI, action.lastId) 
-        yield put({ 
-          type: LOAD_POSTS_SUCCESS,
-          data: result.data
-        })
-
-    } catch(err){
-        yield put({ 
-            type: LOAD_POSTS_FAILURE,
-            error: err.response.data
-        })
-    }
-
+function* loadPosts(action) {
+  try {
+    const result = yield call(loadPostsAPI, action.lastId);
+    yield put({
+      type: LOAD_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOAD_POSTS_FAILURE,
+      error: err.response.data,
+    });
+  }
 }
+
 function removePostAPI(data){
     // 실제로 서버에 요청을 보내는 부분
     return axios.delete(`/post/${data}`)
