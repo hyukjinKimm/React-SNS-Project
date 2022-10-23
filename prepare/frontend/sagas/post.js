@@ -7,7 +7,8 @@ import {
     LIKE_POST_REQUEST, LIKE_POST_SUCCESS, LIKE_POST_FAILURE,
     UNLIKE_POST_REQUEST, UNLIKE_POST_SUCCESS, UNLIKE_POST_FAILURE, 
     UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_SUCCESS, UPLOAD_IMAGES_FAILURE, 
-    RETWEET_REQUEST, RETWEET_SUCCESS, RETWEET_FAILURE
+    RETWEET_REQUEST, RETWEET_SUCCESS, RETWEET_FAILURE,
+    LOAD_POST_REQUEST, LOAD_POST_SUCCESS, LOAD_POST_FAILURE
 } from '../reducers/post'
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user'
@@ -39,6 +40,25 @@ function* addPost(action){
     }
 
 }
+function loadPostAPI(data) {
+    return axios.get(`/post/${data}`);
+  }
+function* loadPost(action) {
+  try {
+    const result = yield call(loadPostAPI, action.data);
+    yield put({
+      type: LOAD_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOAD_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function loadPostsAPI(lastId) {
     const params = { lastId:lastId || 0 };
     return axios.get('/posts', {params});
@@ -199,7 +219,9 @@ function* watchaddPost() {
 function* watchLoadPosts() {
     yield throttle(2000,LOAD_POSTS_REQUEST, loadPosts)
 }
-
+function* watchLoadPost() {
+    yield takeLatest(LOAD_POST_REQUEST, loadPost)
+}
 function* watchremovePost() {
     yield takeLatest(REMOVE_POST_REQUEST, removePost)
 }
@@ -220,6 +242,7 @@ export default function* postSaga() {
       fork(watchlikePost), 
       fork(watchunlikePost), 
       fork(watchaddPost), // fork 는 안의 함수를 실행한다는 의미 ( fork 는 비동기 함수 호출)
+      fork(watchLoadPost),
       fork(watchLoadPosts),
       fork(watchAddComment),
       fork(watchremovePost), 
