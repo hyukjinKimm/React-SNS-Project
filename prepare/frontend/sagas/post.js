@@ -8,7 +8,9 @@ import {
     UNLIKE_POST_REQUEST, UNLIKE_POST_SUCCESS, UNLIKE_POST_FAILURE, 
     UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_SUCCESS, UPLOAD_IMAGES_FAILURE, 
     RETWEET_REQUEST, RETWEET_SUCCESS, RETWEET_FAILURE,
-    LOAD_POST_REQUEST, LOAD_POST_SUCCESS, LOAD_POST_FAILURE
+    LOAD_POST_REQUEST, LOAD_POST_SUCCESS, LOAD_POST_FAILURE, 
+    LOAD_USER_POSTS_REQUEST, LOAD_USER_POSTS_SUCCESS, LOAD_USER_POSTS_FAILURE,
+    LOAD_HASHTAG_POSTS_REQUEST, LOAD_HASHTAG_POSTS_SUCCESS, LOAD_HASHTAG_POSTS_FAILURE
 } from '../reducers/post'
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user'
@@ -33,6 +35,7 @@ function* addPost(action){
         })
 
     } catch(err){
+        console.error(err);
         yield put({ 
             type: ADD_POST_FAILURE,
             error: err.response.data
@@ -74,6 +77,44 @@ function* loadPosts(action) {
     console.error(err);
     yield put({
       type: LOAD_POSTS_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+function loadUserPostsAPI(data, lastId) {
+    const params = { lastId:lastId || 0 };
+    return axios.get(`/user/${data}/posts`, {params});
+  }
+function* loadUserPosts(action) {
+  try {
+    const result = yield call(loadUserPostsAPI, action.data, action.lastId);
+    yield put({
+      type: LOAD_USER_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOAD_USER_POSTS_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+function loadHashtagPostsAPI(data, lastId) {
+    const params = { lastId:lastId || 0 };
+    return axios.get(`/hashtag/${encodeURIComponent(data)}`, {params});
+  }
+function* loadHashtagPosts(action) {
+  try {
+    const result = yield call(loadHashtagPostsAPI, action.data, action.lastId);
+    yield put({
+      type: LOAD_HASHTAG_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOAD_HASHTAG_POSTS_FAILURE,
       error: err.response.data,
     });
   }
@@ -235,6 +276,12 @@ function* watchUploadImages() {
 function* watchRetweet() {
     yield takeLatest(RETWEET_REQUEST, retweet)
 }
+function* watchLoadUserPosts() {
+    yield throttle(5000, LOAD_USER_POSTS_REQUEST, loadUserPosts)
+}
+function* watchLoadHashtagPosts() {
+    yield throttle(50000, LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts)
+}
 export default function* postSaga() {
     yield all([ // all 은 배열안에 있는것들을 한방에 전부 실행 
       fork(watchRetweet),
@@ -243,6 +290,8 @@ export default function* postSaga() {
       fork(watchunlikePost), 
       fork(watchaddPost), // fork 는 안의 함수를 실행한다는 의미 ( fork 는 비동기 함수 호출)
       fork(watchLoadPost),
+      fork(watchLoadUserPosts),
+      fork(watchLoadHashtagPosts),
       fork(watchLoadPosts),
       fork(watchAddComment),
       fork(watchremovePost), 
